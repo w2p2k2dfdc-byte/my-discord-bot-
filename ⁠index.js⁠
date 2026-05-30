@@ -1,0 +1,27 @@
+const fs = require('fs');
+const path = require('path');
+const { Client, Collection, GatewayIntentBits, REST, Routes, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+require('dotenv').config();
+
+// التأكد من وجود المجلدات قبل التشغيل
+const ensureDir = (dirPath) => { if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true }); };
+ensureDir(path.join(__dirname, 'Commands', 'data'));
+ensureDir(path.join(__dirname, 'System', 'data'));
+
+const afkFilePath = path.join(__dirname, 'Commands', 'data', 'afk.json');
+const pointsFilePath = path.join(__dirname, 'System', 'data', 'points.json');
+
+// إنشاء الملفات إذا لم تكن موجودة
+if (!fs.existsSync(afkFilePath)) fs.writeFileSync(afkFilePath, '{}');
+if (!fs.existsSync(pointsFilePath)) fs.writeFileSync(pointsFilePath, '{}');
+
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
+});
+
+client.commands = new Collection();
+client.systems = new Collection();
+
+// (بقية الكود الخاص بك هنا كما هو...)
+// ملاحظة: تأكد أن CLIENT_ID و DISCORD_TOKEN موجودة في ملف .env
+client.login(process.env.DISCORD_TOKEN);
